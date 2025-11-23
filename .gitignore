@@ -1,0 +1,96 @@
+# ============================================
+# Sourcing Agent Plugin - .gitignore
+# ============================================
+# This plugin is a TEMPLATE - share the template, not your customizations
+#
+# PUBLIC (committed): Template structure, TODO markers, example schemas
+# PRIVATE (ignored): Your accelerators, rubrics, API keys, research outputs
+# ============================================
+
+# ============================================
+# SECRET SAUCE - Your Customizations (DO NOT SHARE)
+# ============================================
+
+# Your customized impact rubric with specific criteria
+# (Template version with TODOs is committed, your filled-in version is not)
+skills/accelerator-research/references/impact-rubrics-custom.md
+skills/accelerator-research/references/my-rubrics/
+
+# Your accelerator list and research outputs
+accelerators/
+portfolios/
+research-outputs/
+reports/
+*.csv
+*.xlsx
+
+# ============================================
+# API Keys and Secrets
+# ============================================
+
+# Never commit API keys
+.env
+.env.*
+*.env
+secrets/
+credentials/
+
+# Claude local settings (may contain paths/preferences)
+.claude/
+
+# ============================================
+# Standard Development Ignores
+# ============================================
+
+# OS files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# IDE/Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Python (if scripts added later)
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+env/
+*.egg-info/
+
+# Node (if scripts added later)
+node_modules/
+npm-debug.log
+
+# Logs
+*.log
+logs/
+
+# Temp files
+*.tmp
+*.temp
+.cache/
+
+# ============================================
+# Claude Code Specific
+# ============================================
+
+# Local Claude settings
+.claude/
+CLAUDE.md
+
+# ============================================
+# Build/Output Artifacts
+# ============================================
+
+dist/
+build/
+*.egg
+*.whl
+
+obsidian/

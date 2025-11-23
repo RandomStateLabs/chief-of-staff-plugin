@@ -1,0 +1,32 @@
+{
+  "name": "chief-of-staff-marketplace",
+  "metadata": {
+    "description": "Your AI Chief of Staff - intelligent daily briefings that synthesize Obsidian notes, Linear tasks, and Graphiti memory for comprehensive project clarity",
+    "version": "0.1.0"
+  },
+  "owner": {
+    "name": "RandomStateLabs",
+    "url": "https://github.com/RandomStateLabs/chief-of-staff-plugin"
+  },
+  "plugins": [
+    {
+      "name": "chief-of-staff",
+      "source": "./plugins/chief-of-staff",
+      "description": "AI Chief of Staff plugin providing morning briefs, evening syncs with Linear update proposals, and comprehensive project analysis. Synthesizes context across Obsidian, Linear, and Graphiti for daily clarity and project momentum insights.",
+      "category": "productivity",
+      "tags": [
+        "productivity",
+        "planning",
+        "briefings",
+        "obsidian",
+        "linear",
+        "graphiti",
+        "project-management",
+        "task-management",
+        "knowledge-management",
+        "chief-of-staff",
+        "daily-planning"
+      ]
+    }
+  ]
+}
