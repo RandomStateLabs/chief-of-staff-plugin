@@ -17,7 +17,19 @@
     "graphiti",
     "chief-of-staff"
   ],
-  "commands": "./commands/",
-  "agents": "./agents/",
-  "skills": "./skills/"
+  "commands": [
+    "./commands/morning-brief.md",
+    "./commands/evening-sync.md",
+    "./commands/project-brief.md"
+  ],
+  "agents": [
+    "./agents/morning-planner.md",
+    "./agents/evening-reviewer.md",
+    "./agents/project-analyst.md"
+  ],
+  "skills": [
+    "./skills/obsidian-reader",
+    "./skills/linear-integration",
+    "./skills/graphiti-memory"
+  ]
 }
