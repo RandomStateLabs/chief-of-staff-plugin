@@ -175,6 +175,80 @@ mcp__linear__list_issue_labels(
 # Use for: Understanding categorization
 ```
 
+## Project Mapping (Auto-Detection)
+
+When using `/project-sync`, auto-detect which Linear project from the current directory.
+
+### Workspace Structure
+
+**Teams**:
+| Team | Purpose |
+|------|---------|
+| RS42 | Company/internal work, product development |
+| Evonik | Client work, consulting projects |
+
+**Active Projects**:
+| Directory Pattern | Linear Project | Team |
+|-------------------|----------------|------|
+| `pe-eval`, `pe_eval` | Pe-eval: AI Document Analysis System | RS42 |
+| `cshc`, `cshc-smartops` | CSHC SmartOps | Evonik |
+| `hp-smartops`, `hp_smartops` | HP Smartops | Evonik |
+| `pharmatec` | Pharmatec Security & Maintenance | Evonik |
+| `sourcing-agent` | Sourcing Agent - Claude Code Plugin | RS42 |
+| `accelerator-scout` | Accelerator Scout - Single Agent Demo | RS42 |
+| `linear-setup` | Linear Setup | RS42 |
+
+### Pattern 8: Auto-Detect Project from Directory
+
+```python
+# Step 1: Get current directory name
+# e.g., ~/RS42/pe-eval/ → "pe-eval"
+
+# Step 2: List all projects
+mcp__linear__list_projects()
+
+# Step 3: Match directory to project
+# Match logic (in order):
+# 1. Exact slug match: "pe-eval" matches "Pe-eval"
+# 2. Partial match: "pe-eval" matches "Pe-eval: AI Document Analysis System"
+# 3. Case-insensitive: "CSHC" matches "CSHC SmartOps"
+# 4. Hyphen/underscore normalized: "pe_eval" matches "pe-eval"
+
+# Step 4: If no match, check CLAUDE.md for Linear reference
+# Look for: "Linear Project:", "Project:", "[RS4-" patterns
+
+# Step 5: If still ambiguous, ask user to select
+```
+
+### Pattern 9: Get Project Issues for Sync
+
+```python
+# Get ALL issues for a project (any state)
+mcp__linear__list_issues(
+    project="Pe-eval: AI Document Analysis System",
+    limit=100
+)
+
+# Returns issues in all states: In Progress, Done, Blocked, Todo, etc.
+# Use for: Project sync, comparing against evidence
+```
+
+### Pattern 10: Create Issue in Project
+
+```python
+# Create issue with project assignment
+mcp__linear__create_issue(
+    team="RS42",                          # Required
+    title="Fix authentication issue",      # Required
+    project="Pe-eval",                     # Add to project
+    description="Details...",              # Optional
+    priority=2,                            # High
+    labels=["bug", "dev"]                  # Optional
+)
+
+# Note: Project can be name or ID
+```
+
 ## WRITE Operations (Require Approval)
 
 These operations modify Linear and MUST use batch approval pattern:

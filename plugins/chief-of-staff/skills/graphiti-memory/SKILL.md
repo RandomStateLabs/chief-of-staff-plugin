@@ -341,6 +341,125 @@ mcp__graphiti__add_memory(
 
 4. Process: Build comprehensive timeline, identify patterns, show evolution
 
+## Project-Scoped Memory (Auto-Detection)
+
+When using `/project-sync`, store and query memory using project-specific group_ids.
+
+### Project Group ID Mapping
+
+Use these `group_id` values for project-scoped memory:
+
+| Project | group_id | Team |
+|---------|----------|------|
+| Pe-eval: AI Document Analysis System | `pe-eval` | RS42 |
+| CSHC SmartOps | `cshc-smartops` | Evonik |
+| HP Smartops | `hp-smartops` | Evonik |
+| Pharmatec Security & Maintenance | `pharmatec` | Evonik |
+| Sourcing Agent - Claude Code Plugin | `sourcing-agent` | RS42 |
+| Accelerator Scout - Single Agent Demo | `accelerator-scout` | RS42 |
+| Linear Setup | `linear-setup` | RS42 |
+
+**Default group_ids**:
+| Context | group_id |
+|---------|----------|
+| Personal/general | `default` |
+| Cross-project insights | `cross-project` |
+| Chief of Staff plugin | `chief-of-staff` |
+
+### Pattern 8: Project-Scoped Query
+
+```python
+# Query facts for a specific project
+mcp__graphiti__search_memory_facts(
+    query="status decisions blockers milestones",
+    group_ids=["pe-eval"],  # Project-specific
+    max_facts=15
+)
+
+# Get recent episodes for project
+mcp__graphiti__get_episodes(
+    group_ids=["pe-eval"],
+    max_episodes=10
+)
+
+# Returns: Only facts/episodes stored with that group_id
+# Use for: Project briefs, project sync
+```
+
+### Pattern 9: Project Sync Storage
+
+```python
+# Store project sync results
+mcp__graphiti__add_memory(
+    name="Project Sync - Pe-eval - 2025-11-24",
+    episode_body="Synced Pe-eval project. Marked complete: RS4-36 (Workflow 2 testing), RS4-44 (system validation). Marked blocked: RS4-29 (Google Sheets auth). Created: RS4-XX (Fix Google Sheets auth). 4 tasks updated total.",
+    source="text",
+    source_description="Project sync session",
+    group_id="pe-eval"  # Project-specific group
+)
+
+# Store structured sync data
+import json
+
+sync_data = {
+    "sync_date": "2025-11-24",
+    "project": "Pe-eval",
+    "updates": {
+        "completed": ["RS4-36", "RS4-44"],
+        "blocked": ["RS4-29"],
+        "created": ["RS4-XX"]
+    },
+    "evidence_sources": ["CLAUDE.md", "Obsidian notes", "Graphiti"]
+}
+
+mcp__graphiti__add_memory(
+    name="Project Sync Data - Pe-eval - 2025-11-24",
+    episode_body=json.dumps(sync_data),
+    source="json",
+    source_description="Structured sync data",
+    group_id="pe-eval"
+)
+```
+
+### Pattern 10: Cross-Project Insights
+
+```python
+# Query across multiple projects
+mcp__graphiti__search_memory_facts(
+    query="blockers deployment issues",
+    group_ids=["pe-eval", "cshc-smartops", "hp-smartops"],
+    max_facts=20
+)
+
+# Store insight that spans projects
+mcp__graphiti__add_memory(
+    name="Cross-Project Pattern - Authentication",
+    episode_body="Noticed recurring auth issues across projects: Pe-eval (Google Sheets), CSHC (Azure AD). Consider standardizing auth approach.",
+    source="text",
+    source_description="Cross-project learning",
+    group_id="cross-project"
+)
+```
+
+### Pattern 11: Auto-Detect Group from Directory
+
+```python
+# Step 1: Get current directory name
+# e.g., ~/RS42/pe-eval/ → "pe-eval"
+
+# Step 2: Normalize to group_id
+# - Lowercase
+# - Replace underscores with hyphens
+# - Match against known project group_ids
+
+# Step 3: Use in queries
+mcp__graphiti__search_memory_facts(
+    query="recent work status",
+    group_ids=["pe-eval"],  # Derived from directory
+    max_facts=10
+)
+```
+
 ## Understanding Graphiti's Knowledge Graph
 
 ### Key Concepts

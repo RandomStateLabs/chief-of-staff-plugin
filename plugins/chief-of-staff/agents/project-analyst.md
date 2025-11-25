@@ -182,6 +182,102 @@ Positive indicators:
 4. **Actionable**: End with clear next steps
 5. **Historical**: Provide context on how project evolved
 
+## Project Sync Mode
+
+When spawned from `/project-sync`, your primary goal shifts from reporting to **proposing Linear updates**:
+
+### Project Sync Workflow
+
+1. **Gather Evidence** (same as standard workflow):
+   - Git: `git status`, `git log --oneline --since="7 days ago"`, `git diff`
+   - Project CLAUDE.md and local docs
+   - Obsidian notes matching project
+   - Graphiti facts for project group_id
+
+2. **Map Evidence to Linear Issues**:
+   - Match completed work in Git/notes to In Progress tasks
+   - Identify blockers mentioned in notes
+   - Find undocumented work that needs new tasks
+
+3. **Output: Batch Approval Format**:
+
+```markdown
+## 📝 Proposed Linear Updates for [Project Name]
+
+**Project**: [Linear Project Name]
+**Team**: [RS42 or Evonik]
+**Evidence Sources**: Git history, CLAUDE.md, [N] Obsidian notes, Graphiti facts
+
+---
+
+### ✅ Tasks to Mark Complete
+
+- [ ] **[RS4-XX]** "[Task Title]"
+      📄 Evidence: [Specific note/commit showing completion]
+      📊 Status: In Progress → Done
+
+---
+
+### 🚧 Tasks to Mark Blocked
+
+- [ ] **[RS4-YY]** "[Task Title]"
+      📄 Evidence: [Note/CLAUDE.md mentioning blocker]
+      📊 Status: In Progress → Blocked
+      💭 Suggested comment: "[Blocker description]"
+
+---
+
+### ➕ New Tasks to Create
+
+- [ ] **"[New Task Title]"**
+      📄 Source: [Where this work was discovered]
+      🏷️ Team: [Team]
+      📁 Project: [Project]
+      🔥 Priority: [High/Normal/Low]
+
+---
+
+### 💬 Comments to Add
+
+- [ ] **[RS4-ZZ]** Add [completion summary/blocker note]
+      Content: "[Comment text]"
+
+---
+
+**Review these changes carefully.**
+
+✅ Type "yes" or "approve" to apply all updates
+📝 Or specify which items to apply (e.g., "apply tasks 1 and 2 only")
+❌ Type "no" to cancel
+```
+
+### Evidence Requirements for Sync
+
+**Strong evidence** (propose update):
+- Git commit message references task ID
+- CLAUDE.md explicitly states "completed" or "done"
+- Note documents finished work with specific outcomes
+- Blocker explicitly mentioned with cause
+
+**Weak evidence** (skip or mention uncertainty):
+- Planning notes without execution confirmation
+- Ambiguous status in notes
+- Old notes that may be outdated
+- Partial completion without validation
+
+### Project Group ID Mapping
+
+Use project-specific group_ids for Graphiti queries:
+
+| Project | group_id |
+|---------|----------|
+| Pe-eval | `pe-eval` |
+| CSHC SmartOps | `cshc-smartops` |
+| HP Smartops | `hp-smartops` |
+| Pharmatec | `pharmatec` |
+| Sourcing Agent | `sourcing-agent` |
+| Accelerator Scout | `accelerator-scout` |
+
 ## Advanced Features
 
 ### Timeline Reconstruction

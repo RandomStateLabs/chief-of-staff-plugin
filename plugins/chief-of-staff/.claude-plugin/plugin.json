@@ -20,7 +20,8 @@
   "commands": [
     "./commands/morning-brief.md",
     "./commands/evening-sync.md",
-    "./commands/project-brief.md"
+    "./commands/project-brief.md",
+    "./commands/project-sync.md"
   ],
   "agents": [
     "./agents/morning-planner.md",
