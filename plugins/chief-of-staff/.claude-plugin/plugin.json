@@ -8,7 +8,7 @@
   },
   "repository": "https://github.com/RandomStateLabs/chief-of-staff-plugin",
   "license": "MIT",
-  "tags": [
+  "keywords": [
     "productivity",
     "planning",
     "briefings",
@@ -17,33 +17,7 @@
     "graphiti",
     "chief-of-staff"
   ],
-  "components": {
-    "agents": [
-      "morning-planner",
-      "evening-reviewer",
-      "project-analyst"
-    ],
-    "commands": [
-      "morning-brief",
-      "evening-sync",
-      "project-brief"
-    ],
-    "skills": [
-      "obsidian-reader",
-      "linear-integration",
-      "graphiti-memory"
-    ]
-  },
-  "requirements": {
-    "mcp_servers": [
-      "obsidian",
-      "linear",
-      "graphiti"
-    ]
-  },
-  "metadata": {
-    "category": "productivity-tools",
-    "status": "development",
-    "version_note": "v0.1.0 - Initial template scaffold"
-  }
+  "commands": "./commands/",
+  "agents": "./agents/",
+  "skills": "./skills/"
 }
