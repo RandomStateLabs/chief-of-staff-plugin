@@ -26,13 +26,12 @@ Generate a detailed project briefing that:
 
 ### Step 1: Project Identification
 
-If project name provided:
-- Use the provided name for searches
-- Validate project exists in Linear
-
-If no project name:
-- Ask user: "Which project would you like a briefing on?"
-- List recent projects from Linear for selection
+- Infer the project name automatically from the current working directory or project path (e.g., use the last directory segment as the project slug).
+- Search Linear projects for the inferred name:
+  - Try exact match first (e.g., "auth-service" → "Auth Service")
+  - If no exact match, perform a partial/case-insensitive match against Linear project names.
+- If multiple candidates found or no clear match, ask the user to select which project they want a briefing on from a list of recent Linear projects.
+- Use the selected or inferred project name for all further context gathering and analysis.
 
 ### Step 2: Activate Relevant Skills
 
