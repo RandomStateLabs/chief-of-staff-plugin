@@ -87,12 +87,29 @@ mcp__linear__get_issue(id="[issue-id]")
 ```
 
 ### Graphiti Operations
-```
-# Search for project facts
-mcp__graphiti__search_memory_facts(query="[project name] status", max_facts=10)
 
-# Find related entities
-mcp__graphiti__search_nodes(query="[project keywords]", max_nodes=5)
+**⚠️ CRITICAL: Always use `group_ids=["work"]` for all Graphiti queries!**
+
+```python
+# Search for project facts - ALWAYS include group_ids
+mcp__graphiti__search_memory_facts(
+    query="[project name] status decisions blockers",
+    group_ids=["work"],  # Required for Chief of Staff operations
+    max_facts=10
+)
+
+# Find related entities - ALWAYS include group_ids
+mcp__graphiti__search_nodes(
+    query="[project keywords]",
+    group_ids=["work"],  # Required for Chief of Staff operations
+    max_nodes=5
+)
+
+# Get recent episodes for context
+mcp__graphiti__get_episodes(
+    group_ids=["work"],  # Required for Chief of Staff operations
+    max_episodes=10
+)
 ```
 
 ## Best Practices

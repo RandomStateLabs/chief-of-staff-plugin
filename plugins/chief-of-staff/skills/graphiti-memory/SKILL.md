@@ -7,6 +7,57 @@ description: Access and store knowledge in Graphiti temporal knowledge graph inc
 
 This skill helps you interact with the Graphiti temporal knowledge graph - a dynamic memory system that stores facts, entities, and relationships with temporal metadata. Use this for retrieving historical context and storing insights for future reference.
 
+## ⚠️ CRITICAL: Graph Configuration
+
+**Graphiti maintains TWO separate knowledge graphs:**
+
+| Graph | group_id | Use For |
+|-------|----------|---------|
+| **Work** | `"work"` | Chief of Staff operations, project context, Linear/Obsidian synthesis, professional insights |
+| **Personal** | `"personal"` | Personal notes, non-work context, private learnings |
+
+### Default Behavior
+
+**All Chief of Staff plugin operations use `group_ids: ["work"]` by default.**
+
+This means:
+- Morning briefs query the work graph
+- Evening syncs store to the work graph
+- Project briefs/syncs use the work graph
+- All professional context stays in work graph
+
+### How to Use Group IDs
+
+```python
+# ✅ CORRECT - Always specify group_ids for queries
+mcp__graphiti__search_memory_facts(
+    query="project status decisions",
+    group_ids=["work"],  # Required for Chief of Staff workflows
+    max_facts=15
+)
+
+# ✅ CORRECT - Always specify group_id for storage
+mcp__graphiti__add_memory(
+    name="Evening Reflection - 2025-11-26",
+    episode_body="...",
+    source="text",
+    group_id="work"  # Store in work graph
+)
+
+# ❌ WRONG - Missing group_ids (may query wrong graph or fail)
+mcp__graphiti__search_memory_facts(
+    query="project status",
+    max_facts=10
+)
+```
+
+### When to Use Personal Graph
+
+Only use `group_id="personal"` for:
+- Non-work related learnings
+- Personal notes and reflections
+- Content explicitly marked as personal
+
 ## When to Use This Skill
 
 Activate this skill when:
@@ -49,10 +100,12 @@ Activate this skill when:
 
 ### Pattern 1: Search for Project Facts
 
-```
+```python
 # Search for facts about a project
+# ⚠️ ALWAYS include group_ids!
 mcp__graphiti__search_memory_facts(
     query="Auth Service decisions OR blockers OR milestones",
+    group_ids=["work"],  # Use "work" for Chief of Staff operations
     max_facts=10
 )
 
@@ -67,10 +120,11 @@ mcp__graphiti__search_memory_facts(
 
 ### Pattern 2: Find Related Entities
 
-```
+```python
 # Search for entities (projects, people, concepts)
 mcp__graphiti__search_nodes(
     query="Auth Service",
+    group_ids=["work"],  # Use "work" for Chief of Staff operations
     max_nodes=5
 )
 
@@ -84,10 +138,10 @@ mcp__graphiti__search_nodes(
 
 ### Pattern 3: Get Recent Episodes
 
-```
+```python
 # Get recent memories/episodes
 mcp__graphiti__get_episodes(
-    group_ids=["default"],  # Or specific project group
+    group_ids=["work"],  # Use "work" for Chief of Staff operations
     max_episodes=10
 )
 
@@ -101,17 +155,18 @@ mcp__graphiti__get_episodes(
 
 ### Pattern 4: Search with Filtering
 
-```
-# Search facts for specific group/project
+```python
+# Search facts for specific group/project - use "work" graph
 mcp__graphiti__search_memory_facts(
     query="deployment blockers",
-    group_ids=["auth-service-project"],
+    group_ids=["work"],  # Always use "work" for Chief of Staff
     max_facts=15
 )
 
 # Search nodes by entity type
 mcp__graphiti__search_nodes(
     query="engineering team",
+    group_ids=["work"],  # Always use "work" for Chief of Staff
     entity_types=["person", "team"],
     max_nodes=8
 )
@@ -124,14 +179,14 @@ mcp__graphiti__search_nodes(
 
 ### Pattern 5: Store Text Insight
 
-```
+```python
 # Store learning or insight from today
 mcp__graphiti__add_memory(
     name="Evening Reflection - 2025-11-23",
     episode_body="Completed auth service implementation. Discovered token expiry bug during testing. Team velocity good this week. Blocker on staging deployment resolved by infra team.",
     source="text",
     source_description="Daily reflection",
-    group_id="default"
+    group_id="work"  # Always use "work" for Chief of Staff operations
 )
 
 # Graphiti will:
@@ -145,7 +200,7 @@ mcp__graphiti__add_memory(
 
 ### Pattern 6: Store Structured Data
 
-```
+```python
 # Store structured project data as JSON
 import json
 
@@ -169,7 +224,8 @@ mcp__graphiti__add_memory(
     name="Auth Service Project Status - 2025-11-23",
     episode_body=json.dumps(project_data),
     source="json",
-    source_description="Weekly project update"
+    source_description="Weekly project update",
+    group_id="work"  # Always use "work" for Chief of Staff operations
 )
 
 # Graphiti automatically processes JSON to extract:
@@ -182,14 +238,14 @@ mcp__graphiti__add_memory(
 
 ### Pattern 7: Store Decision History
 
-```
+```python
 # Capture important decisions for future reference
 mcp__graphiti__add_memory(
     name="Architecture Decision - Auth Token Strategy",
     episode_body="Decided to use JWT tokens with 1-hour expiry and refresh tokens. Considered session-based auth but JWT provides better scalability. Trade-off: need to handle token refresh on client.",
     source="text",
     source_description="Architecture decision record",
-    group_id="auth-service-project"
+    group_id="work"  # Store in work graph for searchability
 )
 
 # Future queries like "why did we choose JWT?" will surface this
@@ -283,9 +339,11 @@ mcp__graphiti__add_memory(
 ### Morning Brief Workflow
 
 1. Query for recent project context:
-   ```
+   ```python
+   # ⚠️ ALWAYS include group_ids - queries will fail without them!
    mcp__graphiti__search_memory_facts(
        query="project status OR recent decisions",
+       group_ids=["work"],  # Use "work" for all Chief of Staff operations
        max_facts=10
    )
    ```
@@ -295,107 +353,94 @@ mcp__graphiti__add_memory(
 ### Evening Sync Workflow
 
 1. Store today's insights:
-   ```
+   ```python
    mcp__graphiti__add_memory(
        name="Evening Reflection - [Date]",
        episode_body="[Summary of day's work, learnings, blockers]",
-       source="text"
+       source="text",
+       group_id="work"  # Store in work graph
    )
    ```
 
 2. Store structured updates:
-   ```
+   ```python
    mcp__graphiti__add_memory(
        name="Task Updates - [Date]",
        episode_body=json.dumps(task_data),
-       source="json"
+       source="json",
+       group_id="work"  # Store in work graph
    )
    ```
 
 ### Project Brief Workflow
 
 1. Search for all project context:
-   ```
+   ```python
    mcp__graphiti__search_memory_facts(
        query="[Project Name] milestones OR decisions OR blockers",
-       group_ids=["[project-group]"],
+       group_ids=["work"],  # Use "work" for all Chief of Staff operations
        max_facts=20
    )
    ```
 
 2. Find related entities:
-   ```
+   ```python
    mcp__graphiti__search_nodes(
        query="[Project Name]",
+       group_ids=["work"],  # Use "work" for all Chief of Staff operations
        max_nodes=10
    )
    ```
 
 3. Get recent episodes:
-   ```
+   ```python
    mcp__graphiti__get_episodes(
-       group_ids=["[project-group]"],
+       group_ids=["work"],  # Use "work" for all Chief of Staff operations
        max_episodes=15
    )
    ```
 
 4. Process: Build comprehensive timeline, identify patterns, show evolution
 
-## Project-Scoped Memory (Auto-Detection)
+## Project-Scoped Memory
 
-When using `/project-sync`, store and query memory using project-specific group_ids.
+All Chief of Staff operations use the **"work"** graph. Projects are distinguished by:
+1. **Query content** - Include project name in search queries
+2. **Episode naming** - Include project name in episode names
+3. **Episode content** - Store project context in the episode body
 
-### Project Group ID Mapping
-
-Use these `group_id` values for project-scoped memory:
-
-| Project | group_id | Team |
-|---------|----------|------|
-| Pe-eval: AI Document Analysis System | `pe-eval` | RS42 |
-| CSHC SmartOps | `cshc-smartops` | Evonik |
-| HP Smartops | `hp-smartops` | Evonik |
-| Pharmatec Security & Maintenance | `pharmatec` | Evonik |
-| Sourcing Agent - Claude Code Plugin | `sourcing-agent` | RS42 |
-| Accelerator Scout - Single Agent Demo | `accelerator-scout` | RS42 |
-| Linear Setup | `linear-setup` | RS42 |
-
-**Default group_ids**:
-| Context | group_id |
-|---------|----------|
-| Personal/general | `default` |
-| Cross-project insights | `cross-project` |
-| Chief of Staff plugin | `chief-of-staff` |
+This approach keeps all work knowledge in one searchable graph while maintaining project context.
 
 ### Pattern 8: Project-Scoped Query
 
 ```python
-# Query facts for a specific project
+# Query facts for a specific project - use "work" graph with project in query
 mcp__graphiti__search_memory_facts(
-    query="status decisions blockers milestones",
-    group_ids=["pe-eval"],  # Project-specific
+    query="Pe-eval status decisions blockers milestones",  # Project name in query
+    group_ids=["work"],  # Always use "work"
     max_facts=15
 )
 
-# Get recent episodes for project
+# Get recent episodes and filter by project in results
 mcp__graphiti__get_episodes(
-    group_ids=["pe-eval"],
-    max_episodes=10
+    group_ids=["work"],  # Always use "work"
+    max_episodes=20
 )
 
-# Returns: Only facts/episodes stored with that group_id
+# Returns: Facts/episodes from work graph, filter by project name in content
 # Use for: Project briefs, project sync
 ```
 
 ### Pattern 9: Project Sync Storage
 
 ```python
-# Store project sync results
+# Store project sync results - include project name in episode name and body
 mcp__graphiti__add_memory(
-    name="Project Sync - Pe-eval - 2025-11-24",
-    episode_body="Synced Pe-eval project. Marked complete: RS4-36 (Workflow 2 testing), RS4-44 (system validation). Marked blocked: RS4-29 (Google Sheets auth). Created: RS4-XX (Fix Google Sheets auth). 4 tasks updated total.",
+    name="Project Sync - Pe-eval - 2025-11-24",  # Project name in title
+    episode_body="Project: Pe-eval. Synced project. Marked complete: RS4-36 (Workflow 2 testing), RS4-44 (system validation). Marked blocked: RS4-29 (Google Sheets auth). Created: RS4-XX (Fix Google Sheets auth). 4 tasks updated total.",
     source="text",
     source_description="Project sync session",
-    group_id="pe-eval"  # Project-specific group
+    group_id="work"  # Always use "work" graph
 )
 
 # Store structured sync data
@@ -403,7 +448,7 @@ import json
 
 sync_data = {
     "sync_date": "2025-11-24",
-    "project": "Pe-eval",
+    "project": "Pe-eval",  # Project name in structured data
     "updates": {
         "completed": ["RS4-36", "RS4-44"],
         "blocked": ["RS4-29"],
@@ -417,17 +462,17 @@ mcp__graphiti__add_memory(
     episode_body=json.dumps(sync_data),
     source="json",
     source_description="Structured sync data",
-    group_id="pe-eval"
+    group_id="work"  # Always use "work" graph
 )
 ```
 
 ### Pattern 10: Cross-Project Insights
 
 ```python
-# Query across multiple projects
+# Query across all projects - use "work" graph
 mcp__graphiti__search_memory_facts(
-    query="blockers deployment issues",
-    group_ids=["pe-eval", "cshc-smartops", "hp-smartops"],
+    query="blockers deployment issues",  # Generic query hits all projects
+    group_ids=["work"],
     max_facts=20
 )
 
@@ -437,26 +482,25 @@ mcp__graphiti__add_memory(
     episode_body="Noticed recurring auth issues across projects: Pe-eval (Google Sheets), CSHC (Azure AD). Consider standardizing auth approach.",
     source="text",
     source_description="Cross-project learning",
-    group_id="cross-project"
+    group_id="work"  # All work insights in "work" graph
 )
 ```
 
-### Pattern 11: Auto-Detect Group from Directory
+### Pattern 11: Query by Project Context
 
 ```python
-# Step 1: Get current directory name
-# e.g., ~/RS42/pe-eval/ → "pe-eval"
-
-# Step 2: Normalize to group_id
-# - Lowercase
-# - Replace underscores with hyphens
-# - Match against known project group_ids
-
-# Step 3: Use in queries
+# Search for project by including name in query
 mcp__graphiti__search_memory_facts(
-    query="recent work status",
-    group_ids=["pe-eval"],  # Derived from directory
+    query="Pe-eval recent work status",  # Include project name
+    group_ids=["work"],
     max_facts=10
+)
+
+# Search nodes for project entities
+mcp__graphiti__search_nodes(
+    query="Pe-eval",  # Project name as entity
+    group_ids=["work"],
+    max_nodes=5
 )
 ```
 

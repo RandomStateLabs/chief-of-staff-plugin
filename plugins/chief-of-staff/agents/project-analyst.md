@@ -128,22 +128,27 @@ mcp__linear__get_issue(id="[issue-id]")
 ```
 
 ### Graphiti Operations
-```
-# Search project facts
+
+**⚠️ CRITICAL: Always use `group_ids=["work"]` for all Graphiti queries!**
+
+```python
+# Search project facts - include project name in query, use "work" graph
 mcp__graphiti__search_memory_facts(
-    query="[project name] decisions OR milestones OR blockers",
+    query="[project name] decisions milestones blockers status",
+    group_ids=["work"],  # Required for Chief of Staff operations
     max_facts=20
 )
 
-# Find project entities
+# Find project entities - include project name in query, use "work" graph
 mcp__graphiti__search_nodes(
     query="[project name]",
+    group_ids=["work"],  # Required for Chief of Staff operations
     max_nodes=10
 )
 
-# Get recent project episodes
+# Get recent project episodes from "work" graph
 mcp__graphiti__get_episodes(
-    group_ids=["[project-group-id]"],
+    group_ids=["work"],  # Required for Chief of Staff operations
     max_episodes=15
 )
 ```
@@ -265,18 +270,28 @@ When spawned from `/project-sync`, your primary goal shifts from reporting to **
 - Old notes that may be outdated
 - Partial completion without validation
 
-### Project Group ID Mapping
+### Graphiti Usage for Project Sync
 
-Use project-specific group_ids for Graphiti queries:
+**⚠️ CRITICAL: Always use `group_ids=["work"]` for all Graphiti operations!**
 
-| Project | group_id |
-|---------|----------|
-| Pe-eval | `pe-eval` |
-| CSHC SmartOps | `cshc-smartops` |
-| HP Smartops | `hp-smartops` |
-| Pharmatec | `pharmatec` |
-| Sourcing Agent | `sourcing-agent` |
-| Accelerator Scout | `accelerator-scout` |
+All project data is stored in the **"work"** graph. Use project names in queries to filter:
+
+```python
+# Query project-specific facts
+mcp__graphiti__search_memory_facts(
+    query="[Project Name] status blockers decisions",
+    group_ids=["work"],  # Always use "work"
+    max_facts=15
+)
+
+# Store project sync results
+mcp__graphiti__add_memory(
+    name="Project Sync - [Project Name] - [Date]",
+    episode_body="Project: [Name]. [Sync details...]",
+    source="text",
+    group_id="work"  # Always use "work"
+)
+```
 
 ## Advanced Features
 

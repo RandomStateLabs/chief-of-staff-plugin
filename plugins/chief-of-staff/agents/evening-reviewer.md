@@ -129,15 +129,39 @@ mcp__linear__create_issue(
 ```
 
 ### Graphiti Operations
-```
-# Search for today's work context
-mcp__graphiti__search_memory_facts(query="today's work", max_facts=15)
 
-# Add insights from reflection
+**⚠️ CRITICAL: Always use `group_ids=["work"]` for queries and `group_id="work"` for storage!**
+
+```python
+# Search for today's work context - ALWAYS include group_ids
+mcp__graphiti__search_memory_facts(
+    query="today's work recent activity",
+    group_ids=["work"],  # Required for Chief of Staff operations
+    max_facts=15
+)
+
+# Get recent episodes for context
+mcp__graphiti__get_episodes(
+    group_ids=["work"],  # Required for Chief of Staff operations
+    max_episodes=10
+)
+
+# Add insights from reflection - ALWAYS include group_id
 mcp__graphiti__add_memory(
     name="Evening Reflection - [Date]",
     episode_body="[insights and learnings from today]",
-    source="text"
+    source="text",
+    source_description="Daily evening reflection",
+    group_id="work"  # Store in work graph
+)
+
+# Store structured sync data
+mcp__graphiti__add_memory(
+    name="Task Updates - [Date]",
+    episode_body="[JSON structured updates]",
+    source="json",
+    source_description="End of day task status",
+    group_id="work"  # Store in work graph
 )
 ```
 

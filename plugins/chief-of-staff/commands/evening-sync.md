@@ -186,12 +186,23 @@ mcp__linear__create_issue(
 ```
 
 From **graphiti-memory** skill:
-```
-# Add today's insights
+```python
+# ⚠️ CRITICAL: Always pass group_id="work" for storage operations!
+
+# Query today's context first
+mcp__graphiti__search_memory_facts(
+    query="today's work recent activity",
+    group_ids=["work"],  # Always use "work" for Chief of Staff
+    max_facts=10
+)
+
+# Add today's insights to "work" graph
 mcp__graphiti__add_memory(
     name="Evening Reflection - [Date]",
     episode_body="Completed auth service. Found token expiry bug. Blocked by infra on staging deploy.",
-    source="text"
+    source="text",
+    source_description="Daily evening reflection",
+    group_id="work"  # Store in work graph
 )
 ```
 

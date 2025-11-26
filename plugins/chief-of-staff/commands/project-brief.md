@@ -302,22 +302,26 @@ mcp__linear__get_issue(id="PROJ-123")
 ```
 
 From **graphiti-memory** skill:
-```
-# Search project facts
+```python
+# ⚠️ CRITICAL: Always pass group_ids=["work"] for all Chief of Staff operations!
+
+# Search project facts - include project name in query
 mcp__graphiti__search_memory_facts(
-    query="[project name] decisions OR milestones",
+    query="[project name] decisions milestones blockers",
+    group_ids=["work"],  # Always use "work" for Chief of Staff
     max_facts=20
 )
 
 # Find project entities
 mcp__graphiti__search_nodes(
     query="[project name]",
+    group_ids=["work"],  # Always use "work" for Chief of Staff
     max_nodes=10
 )
 
-# Get project episodes
+# Get project episodes from "work" graph
 mcp__graphiti__get_episodes(
-    group_ids=["[project-group]"],
+    group_ids=["work"],  # Always use "work" for Chief of Staff
     max_episodes=15
 )
 ```

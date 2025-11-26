@@ -106,9 +106,21 @@ mcp__linear__list_issues(assignee="me", state="In Progress")
 ```
 
 From **graphiti-memory** skill:
-```
-# Search for recent project context
-mcp__graphiti__search_memory_facts(query="project status", max_facts=10)
+```python
+# ⚠️ CRITICAL: Always pass group_ids=["work"] for all Chief of Staff operations!
+
+# Query project context from the "work" graph
+mcp__graphiti__search_memory_facts(
+    query="project status decisions blockers",
+    group_ids=["work"],  # Always use "work" for Chief of Staff
+    max_facts=10
+)
+
+# Get recent episodes from "work" graph
+mcp__graphiti__get_episodes(
+    group_ids=["work"],  # Always use "work" for Chief of Staff
+    max_episodes=10
+)
 ```
 
 ## Best Practices

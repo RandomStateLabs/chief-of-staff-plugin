@@ -233,19 +233,21 @@ mcp__linear__list_issues(
 
 #### Source 5: Graphiti Memory (Priority 4)
 
-Query project-specific context:
+Query project context from the "work" graph:
 
 ```python
-# Search for project facts
+# ⚠️ CRITICAL: Always pass group_ids=["work"] for all Chief of Staff operations!
+
+# Search for project facts - include project name in query
 mcp__graphiti__search_memory_facts(
     query="[project-name] status decisions blockers",
-    group_ids=["[project-slug]"],
+    group_ids=["work"],  # Always use "work" for Chief of Staff
     max_facts=15
 )
 
-# Get project episodes
+# Get recent episodes from "work" graph
 mcp__graphiti__get_episodes(
-    group_ids=["[project-slug]"],
+    group_ids=["work"],  # Always use "work" for Chief of Staff
     max_episodes=10
 )
 ```
@@ -376,15 +378,16 @@ mcp__linear__create_comment(
 
 ### Step 7: Store Sync to Graphiti
 
-After updates, store sync insights:
+After updates, store sync insights to the "work" graph:
 
 ```python
+# ⚠️ CRITICAL: Always pass group_id="work" for storage!
 mcp__graphiti__add_memory(
     name="Project Sync - [Project Name] - [Date]",
-    episode_body="Synced [Project Name]. Completed: [list]. Blocked: [list]. Created: [list].",
+    episode_body="Project: [Project Name]. Synced. Completed: [list]. Blocked: [list]. Created: [list].",
     source="text",
     source_description="Project sync session",
-    group_id="[project-slug]"  # Project-specific group
+    group_id="work"  # Always use "work" graph
 )
 ```
 
