@@ -41,23 +41,14 @@ This command should leverage:
 - **linear-integration** skill - to get all project issues and details
 - **graphiti-memory** skill - to retrieve project history and decisions
 
-### Step 3: Consider Agent Spawning
+### Step 3: Spawn Project Analyst Agent
 
-For comprehensive project briefs, consider spawning the **project-analyst agent**:
+**Spawn the `project-analyst` agent** for project briefs. This is a context-heavy operation that benefits from the agent's dedicated 200K context window.
 
 ```
-When to use agent:
-- Project has 10+ Linear issues
-- Need to analyze 5+ Obsidian notes
-- Want comprehensive timeline reconstruction
-- Deep pattern analysis required
-- Cross-system synthesis complex
-
-When to use skills directly:
-- Small project (1-5 issues)
-- Quick status check
-- User wants fast response
-- Limited scope analysis
+Use the Task tool:
+- subagent_type: "chief-of-staff:project-analyst"
+- prompt: Include the project name and any parameters (--quick, --timeline, --health, --blockers)
 ```
 
 ### Step 4: Comprehensive Data Gathering

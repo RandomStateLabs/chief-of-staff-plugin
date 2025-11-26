@@ -1,165 +1,215 @@
 ---
-description: Start your day with an intelligent morning briefing that synthesizes overnight context from Obsidian, Linear, and Graphiti to show project status and priorities
+description: Start your day with a project status briefing - synthesizes Linear tasks, Obsidian project notes, and Graphiti memory to show what you're working on and what needs attention
 ---
 
 # Morning Brief Command
 
-You are now in **Morning Brief Mode**. Help the user start their day with clarity by gathering and synthesizing their current project status across all systems.
+You are now in **Morning Brief Mode**. Help the user start their day with clarity by gathering and synthesizing their current **project status** across all systems.
 
 ## Command Purpose
 
-Generate a comprehensive morning briefing that:
-1. Reviews overnight context (journal, recent notes, task updates)
-2. Shows current project status and momentum
-3. Highlights priorities and blockers for today
-4. Provides actionable insights to start the day
+Generate a project-focused morning briefing that:
+1. **Loads context from memory** (Graphiti) - understand what you were working on
+2. Shows all active Linear projects and their current status
+3. Lists in-progress and blocked tasks across projects
+4. Surfaces relevant project documentation from Obsidian
+5. Highlights priorities and blockers for today
+
 
 ## Workflow
 
 ### Step 1: Activate Relevant Skills
 
-This command should leverage:
-- **obsidian-reader** skill - to access today's journal and recent notes
-- **linear-integration** skill - to get in-progress tasks
-- **graphiti-memory** skill - to query recent project context
+This command should leverage (in this order):
+- **graphiti-memory** skill - FIRST: Load prior context, decisions, patterns
+- **linear-integration** skill - SECOND: Get current projects, issues, status
+- **obsidian-reader** skill - THIRD: Get project-related notes and documentation
 
-### Step 2: Consider Agent Spawning
+### Step 2: Spawn Morning Planner Agent
 
-For complex morning briefs with many projects, consider spawning the **morning-planner agent**:
+**ALWAYS spawn the `morning-planner` agent** for morning briefs. This is a context-heavy operation that benefits from the agent's dedicated 200K context window.
 
 ```
-When to use agent:
-- User has 5+ active projects
-- Need cross-system synthesis across 10+ data points
-- Want isolated context for detailed analysis
-- Brief requires complex pattern recognition
-
-When to use skills directly:
-- Simple brief with 1-3 projects
-- Quick status check
-- User wants fast response
-- Limited context needed
+Use the Task tool:
+- subagent_type: "chief-of-staff:morning-planner"
+- prompt: Include user's request and any parameters (--project, --quick, etc.)
 ```
 
-### Step 3: Gather Morning Context
+**Why always spawn?**
+- Graphiti queries return substantial context (facts, episodes, patterns)
+- Linear queries across multiple teams (RS42, Evonik) generate many issues
+- Obsidian searches surface multiple relevant notes
+- Cross-system synthesis requires holding all this context simultaneously
+- Keeps the main conversation clean for follow-up questions
 
-Use skills to:
-1. Check for today's daily journal in Obsidian
-2. Get notes modified in last 48 hours
-3. Fetch all "In Progress" Linear issues assigned to user
-4. Query Graphiti for recent project facts
+**DO NOT** attempt to run the morning brief workflow directly in the main conversation.
 
-### Step 4: Synthesize and Present
+### Step 3: Gather Project Data (Graphiti → Linear → Obsidian)
 
-Generate morning brief following this structure:
-
-```markdown
-# Morning Brief - [Date]
-
-## 📊 Project Status Review
-[AI synthesis of where you are across active projects]
-- Project 1: [Status, momentum, key updates]
-- Project 2: [Status, momentum, key updates]
-- Project 3: [Status, momentum, key updates]
-
-## 📔 Today's Journal
-[Today's journal excerpt if exists, or "No journal entry yet - consider starting one!"]
-
-## 📝 Recent Activity (48h)
-[Modified notes with relevance and context]
-- [[Note Title 1]] - [Why this matters]
-- [[Note Title 2]] - [Why this matters]
-- [[Note Title 3]] - [Why this matters]
-
-## ✅ Active Work
-[Linear issues in progress with brief status]
-- [PROJ-123] Task title - [Current state]
-- [PROJ-124] Task title - [Current state]
-
-## 🎯 What This Means
-[Synthesis section with insights]
-- **Momentum**: [What's moving forward]
-- **Blockers**: [What needs attention]
-- **Priorities**: [What to focus on today]
-
-## 💡 Suggested Focus
-1. [Priority action item 1]
-2. [Priority action item 2]
-3. [Priority action item 3]
-```
-
-## MCP Tool Usage Examples
-
-From **obsidian-reader** skill:
-```
-# Get today's journal
-mcp__MCP_DOCKER__obsidian_get_periodic_note(period="daily")
-
-# Get recent changes
-mcp__MCP_DOCKER__obsidian_get_recent_changes(days=2, limit=10)
-```
-
-From **linear-integration** skill:
-```
-# Get in-progress issues
-mcp__linear__list_issues(assignee="me", state="In Progress")
-```
-
-From **graphiti-memory** skill:
+**Step 3a: Get Project Context from Graphiti (FIRST)**
 ```python
 # ⚠️ CRITICAL: Always pass group_ids=["work"] for all Chief of Staff operations!
+# Query Graphiti FIRST to prime context before looking at Linear tasks
 
-# Query project context from the "work" graph
+# Query project facts - decisions, blockers, patterns
 mcp__graphiti__search_memory_facts(
-    query="project status decisions blockers",
-    group_ids=["work"],  # Always use "work" for Chief of Staff
-    max_facts=10
+    query="project status decisions blockers milestones priorities work",
+    group_ids=["work"],
+    max_facts=15
 )
 
-# Get recent episodes from "work" graph
+# Get recent work episodes - what was being worked on
 mcp__graphiti__get_episodes(
-    group_ids=["work"],  # Always use "work" for Chief of Staff
+    group_ids=["work"],
     max_episodes=10
 )
 ```
 
+**Why first?** Graphiti memory tells you:
+- What project/task was the focus recently
+- Key decisions already made
+- Blockers that were encountered
+- Patterns from past work (what worked, what didn't)
+
+This context helps you interpret Linear data more effectively.
+
+**Step 3b: Get Linear Projects and Issues (SECOND)**
+```
+# Get all projects for RS42 team
+mcp__linear__list_projects(team="RS42")
+
+# Get all issues for RS42 team (filter by status after retrieval)
+mcp__linear__list_issues(team="RS42")
+
+# If user also has Evonik work, get those too
+mcp__linear__list_issues(team="Evonik")
+```
+
+**Note**: The Linear MCP queries by TEAM, not by assignee. Filter results locally for "In Progress", "Todo", "Blocked" statuses after retrieval.
+
+**Step 3c: Get Project Documentation from Obsidian (THIRD)**
+```
+# Search for project-related notes (use project names from Linear)
+mcp__MCP_DOCKER__obsidian_simple_search(query="[project name]", context_length=150)
+
+# Get recently modified project notes
+mcp__MCP_DOCKER__obsidian_get_recent_changes(days=7, limit=10)
+
+# Focus on "1 - Main Notes/" folder for project documentation
+mcp__MCP_DOCKER__obsidian_list_files_in_dir(dirpath="1 - Main Notes")
+```
+
+### Step 4: Synthesize and Present
+
+Generate morning brief using **Eisenhower Matrix** format to prioritize work:
+
+```markdown
+# Morning Brief - [Date]
+
+## 📊 Active Projects Overview
+[Quick list of in-progress projects with completion %]
+
+---
+
+# 🎯 EISENHOWER MATRIX
+
+## 🔴 DO FIRST (Urgent + Important)
+*Blockers, deadlines today, critical issues*
+
+| Project | Task | Why Urgent |
+|---------|------|------------|
+| [Project] | [ISSUE-XXX] Task name | [Deadline/Blocker reason] |
+
+**Action Items:**
+1. [Specific action to take NOW]
+2. [Next critical action]
+
+---
+
+## 🟡 SCHEDULE (Important + Not Urgent)
+*Strategic work, project advancement, no immediate deadline*
+
+| Project | Task | Target Date |
+|---------|------|-------------|
+| [Project] | [ISSUE-XXX] Task name | [When to work on it] |
+
+**This Week's Focus:**
+- [Key deliverable 1]
+- [Key deliverable 2]
+
+---
+
+## 🟠 DELEGATE (Urgent + Not Important)
+*Tasks that need doing but could be handed off or automated*
+
+| Task | Suggestion |
+|------|------------|
+| [Task] | [Who/what could handle this] |
+
+---
+
+## ⚪ ELIMINATE (Not Urgent + Not Important)
+*Low-value tasks, distractions, consider dropping*
+
+- [Task that's consuming time but not delivering value]
+
+---
+
+## 📝 Project Context
+[Key Obsidian notes and Graphiti facts relevant to today's work]
+
+## 💡 Memory Insights
+[Patterns from Graphiti - past decisions, recurring blockers, etc.]
+```
+
+### Eisenhower Classification Rules
+
+When classifying tasks:
+
+**URGENT** = Has deadline within 48h OR is blocking other work OR external dependency waiting
+**IMPORTANT** = Directly advances project goals OR has significant business impact
+
+- **Blocked issues** → Always DO FIRST (urgent + important)
+- **In Progress with deadline** → DO FIRST if <48h, else SCHEDULE
+- **In Progress no deadline** → SCHEDULE (important, not urgent)
+- **Backlog items** → Usually SCHEDULE or ELIMINATE
+- **Meetings/admin** → Often DELEGATE or ELIMINATE
+
 ## Best Practices
 
-1. **Be Concise**: Morning briefs should be scannable in 2-3 minutes
-2. **Prioritize Overnight Changes**: Focus on what's new or changed
-3. **Cross-Reference**: Connect related info across systems
-4. **Action-Oriented**: End with clear priorities
-5. **Honest Assessment**: Show both progress and blockers
+1. **Project-First**: Always lead with Linear project status
+2. **Be Specific**: Show actual issue IDs and task names
+3. **Surface Blockers**: Make blocked items highly visible
+4. **Actionable Priorities**: End with concrete next steps
+5. **Connect the Dots**: Link Obsidian notes to relevant projects
 
 ## Optional Parameters
 
-User can customize the brief:
-
 ```
-/morning-brief                    # Standard morning brief
-/morning-brief --project "Auth"   # Focus on specific project
-/morning-brief --detailed         # More comprehensive analysis
-/morning-brief --quick            # Quick status only, skip synthesis
+/morning-brief                    # Full project status brief
+/morning-brief --project "Auth"   # Focus on specific project only
+/morning-brief --quick            # Just show blocked items and priorities
 ```
 
 ## Error Handling
 
-- If Obsidian not accessible: Use Linear + Graphiti only
-- If Linear API fails: Use cached Graphiti data if available
-- If no recent activity: Note it and suggest focus areas
-- If multiple projects: Prioritize by recent activity or user input
+- If Linear API fails: Note it, use Graphiti cached data if available
+- If no Linear projects: Suggest creating project structure
+- If Obsidian not accessible: Continue with Linear + Graphiti only
+- If no in-progress work: Highlight backlog items to consider starting
 
 ## After the Brief
 
 Ask user:
 ```
 Would you like me to:
-- Dive deeper into any specific project? (use /project-brief)
-- Create a focus plan for today?
-- Update any task priorities in Linear?
+- Dive deeper into a specific project? (use /project-brief [name])
+- Update any task statuses in Linear?
+- Help prioritize the backlog?
 ```
 
 ## Related Commands
 
 - `/evening-sync` - End-of-day review and Linear updates
 - `/project-brief [name]` - Deep dive into specific project
+- `/project-sync` - Sync project status across all systems
