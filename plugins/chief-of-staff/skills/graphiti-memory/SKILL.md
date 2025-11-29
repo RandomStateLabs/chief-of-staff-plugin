@@ -1,6 +1,6 @@
 ---
 name: graphiti-memory
-description: Access and store knowledge in Graphiti temporal knowledge graph including project facts, decision history, and insights. Use when you need to query past context, store learnings, or understand relationships between projects and entities.
+description: Access and store knowledge in Graphiti temporal knowledge graph including project facts, decision history, and insights. Use when querying past context, storing learnings, or understanding relationships between projects and entities.
 ---
 
 # Graphiti Memory Skill

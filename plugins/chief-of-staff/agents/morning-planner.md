@@ -1,7 +1,37 @@
 ---
 name: morning-planner
-description: Specialized agent for morning briefings that synthesizes overnight context, reviews project status across Obsidian/Linear/Graphiti, and helps you start your day with clarity
+description: |
+  Use this agent for morning briefings that synthesize project status across Obsidian, Linear, and Graphiti.
+
+  <example>
+  Context: User starts their workday and wants a status overview
+  user: "Give me my morning brief"
+  assistant: "I'll spawn the morning-planner agent to synthesize your context across all systems."
+  <commentary>
+  User explicitly requested morning briefing - this is the primary trigger.
+  </commentary>
+  </example>
+
+  <example>
+  Context: User wants to know what to focus on today
+  user: "What should I work on today?"
+  assistant: "Let me use the morning-planner agent to analyze your projects and priorities."
+  <commentary>
+  User is asking for prioritization guidance at start of work session.
+  </commentary>
+  </example>
+
+  <example>
+  Context: User checking in on project status across systems
+  user: "What's the status of all my projects?"
+  assistant: "I'll spawn the morning-planner to gather context from Obsidian, Linear, and Graphiti."
+  <commentary>
+  Cross-system synthesis request - morning-planner excels at this.
+  </commentary>
+  </example>
+
 model: claude-sonnet-4-5-20250929
+color: cyan
 ---
 
 # Morning Planner Agent

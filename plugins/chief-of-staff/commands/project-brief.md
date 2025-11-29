@@ -1,5 +1,6 @@
 ---
 description: Get a comprehensive deep dive into a specific project by synthesizing all context from Obsidian notes, Linear issues, and Graphiti memory
+argument-hint: project name
 ---
 
 # Project Brief Command

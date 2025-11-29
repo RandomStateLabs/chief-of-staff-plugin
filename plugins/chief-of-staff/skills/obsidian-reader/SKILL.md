@@ -1,6 +1,6 @@
 ---
 name: obsidian-reader
-description: Access and analyze Obsidian vault content including daily journals, recent notes, and searches. Use when you need to read from the user's Obsidian vault for briefings, project analysis, or context gathering.
+description: Access and analyze Obsidian vault content including daily journals, recent notes, and searches. Use when reading from the user's Obsidian vault for briefings, project analysis, or context gathering.
 ---
 
 # Obsidian Reader Skill

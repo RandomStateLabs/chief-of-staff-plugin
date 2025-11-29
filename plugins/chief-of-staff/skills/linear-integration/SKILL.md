@@ -1,6 +1,6 @@
 ---
 name: linear-integration
-description: Access and manage Linear tasks including reading issue status, updating tasks, and creating new issues. Use when you need to interact with the user's Linear workspace for task management and project tracking. CRITICAL - Always use batch approval pattern for write operations.
+description: Access and manage Linear tasks including reading issue status, updating tasks, and creating new issues. Use when interacting with the user's Linear workspace for task management and project tracking. CRITICAL - Always use batch approval pattern for write operations.
 ---
 
 # Linear Integration Skill
