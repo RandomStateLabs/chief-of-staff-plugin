@@ -2,7 +2,6 @@
 name: linear-project-templates
 description: Apply and maintain RS42 Linear project templates. Use when creating new projects, updating project descriptions to follow the template, or syncing project structure. Covers project overview, development roadmap with linked issues, success criteria, and related projects patterns.
 ---
-
 # Linear Project Templates Skill
 
 This skill documents the RS42 Linear project template system and provides patterns for applying consistent project structure across all Linear projects.
@@ -10,10 +9,11 @@ This skill documents the RS42 Linear project template system and provides patter
 ## When to Use This Skill
 
 Activate this skill when:
+
 - Creating a new Linear project - new Linear projects require proper template structure
 - Updating an existing project to follow the RS42 template
 - Reviewing project descriptions for template compliance
-- Linking issues to project Development Roadmap sections
+- Linking issues to project Development Roadmap sections this is what we wer
 - Setting up success criteria or related projects
 
 ## RS42 Project Template Structure
@@ -72,24 +72,26 @@ Activate this skill when:
 
 ### What Linear Method Recommends
 
-| Linear Principle | RS42 Implementation | Status |
-|-----------------|---------------------|--------|
+
+| Linear Principle                                          | RS42 Implementation                                                 | Status     |
+| ----------------------------------------------------------- | --------------------------------------------------------------------- | ------------ |
 | **Write project specs** - brief, communicate why/what/how | Goal section explains "why", Technology/Roadmap explains "what/how" | ✅ Aligned |
-| **Single project owner** | Lead field in Linear | ✅ Aligned |
-| **Clear outcomes/completion dates** | Success Criteria with checkboxes | ✅ Aligned |
-| **Connect daily work to larger goals** | Development Roadmap links issues | ✅ Aligned |
-| **Scope issues small** | Sub-issues under phases | ✅ Aligned |
-| **Purpose-built workflows** | 4-phase standard structure | ✅ Aligned |
+| **Single project owner**                                  | Lead field in Linear                                                | ✅ Aligned |
+| **Clear outcomes/completion dates**                       | Success Criteria with checkboxes                                    | ✅ Aligned |
+| **Connect daily work to larger goals**                    | Development Roadmap links issues                                    | ✅ Aligned |
+| **Scope issues small**                                    | Sub-issues under phases                                             | ✅ Aligned |
+| **Purpose-built workflows**                               | 4-phase standard structure                                          | ✅ Aligned |
 
 ### What Real-World Teams Do (from Research)
 
-| Practice | Description | RS42 Adoption |
-|----------|-------------|---------------|
-| **Outcome-based project names** | Name by goal, not feature | ✅ Use goal-oriented names |
-| **Consistent naming conventions** | Verb-first issue titles | ⚠️ Partially adopted |
-| **Milestone tracking** | Progress checkpoints | ✅ Phases serve as milestones |
-| **Cross-team visibility** | Related Projects linking | ✅ Implemented |
-| **Repository linking** | GitHub/GitLab connections | ✅ Repository section |
+
+| Practice                          | Description               | RS42 Adoption                 |
+| ----------------------------------- | --------------------------- | ------------------------------- |
+| **Outcome-based project names**   | Name by goal, not feature | ✅ Use goal-oriented names    |
+| **Consistent naming conventions** | Verb-first issue titles   | ⚠️ Partially adopted        |
+| **Milestone tracking**            | Progress checkpoints      | ✅ Phases serve as milestones |
+| **Cross-team visibility**         | Related Projects linking  | ✅ Implemented                |
+| **Repository linking**            | GitHub/GitLab connections | ✅ Repository section         |
 
 ### Unique RS42 Patterns (Beyond Standard Linear)
 
@@ -119,11 +121,13 @@ mcp__linear__create_project(
 ### Pattern 2: Link Issues to Roadmap
 
 Issue link format:
+
 ```markdown
 - [RS4-XX](https://linear.app/rs42/issue/RS4-XX/issue-slug) Issue Title
 ```
 
 Full example:
+
 ```markdown
 ### Phase 2: Testing 🚧
 - [RS4-54](https://linear.app/rs42/issue/RS4-54/phase-1-test-morning-brief-command) Test morning brief command
@@ -132,13 +136,15 @@ Full example:
 
 ### Pattern 3: Phase Status Indicators
 
-| Indicator | Meaning | When to Use |
-|-----------|---------|-------------|
-| ✅ | Complete | All issues in phase marked Done |
-| 🚧 | In Progress | At least one issue started |
-| (none) | Not Started | No issues started yet |
+
+| Indicator | Meaning     | When to Use                     |
+| ----------- | ------------- | --------------------------------- |
+| ✅        | Complete    | All issues in phase marked Done |
+| 🚧        | In Progress | At least one issue started      |
+| (none)    | Not Started | No issues started yet           |
 
 Example:
+
 ```markdown
 ### Phase 1: Configuration ✅
 ### Phase 2: Testing 🚧
@@ -157,6 +163,7 @@ Example:
 ```
 
 Rules:
+
 - Use `- [ ]` for incomplete
 - Use `- [x]` for complete
 - Make criteria **measurable** (numbers, specific outcomes)
@@ -171,6 +178,7 @@ Rules:
 ```
 
 Rules:
+
 - Use full Linear project URLs
 - Bidirectional: if A links to B, B should link to A
 - Only link truly related projects (shared domain/tech/user)
@@ -221,6 +229,7 @@ mcp__linear__list_issues(project="Project Name", limit=100)
 ### Step 2: Organize Issues by Phase
 
 Map issues to phases based on:
+
 - Issue title keywords (setup, test, deploy, etc.)
 - Issue labels
 - Issue status (Done issues often Phase 1)
@@ -229,6 +238,7 @@ Map issues to phases based on:
 ### Step 3: Generate Template
 
 Fill in template sections:
+
 1. **Repository** - Get from project notes or ask
 2. **Goal** - Summarize from existing description
 3. **Target Users** - Identify from project context
@@ -268,6 +278,7 @@ When reviewing a project for template compliance:
 ### Issue: No linked issues in roadmap
 
 **Fix**: Get project issues and add links:
+
 ```markdown
 ### Phase 1: Setup ✅
 - [RS4-24](https://linear.app/rs42/issue/RS4-24/...) Set up Google Cloud Project
@@ -277,6 +288,7 @@ When reviewing a project for template compliance:
 ### Issue: Missing phase status indicators
 
 **Fix**: Check issue statuses and add indicators:
+
 - If all Done → ✅
 - If any In Progress → 🚧
 - If all Todo/Backlog → no indicator
@@ -293,6 +305,7 @@ When reviewing a project for template compliance:
 ## Integration with Other Skills
 
 This skill works with:
+
 - **linear-integration** skill - for reading/writing project data
 - **obsidian-reader** skill - for syncing with Obsidian project notes
 
@@ -310,24 +323,26 @@ This skill works with:
 ### Open Questions
 
 1. **Phase naming consistency** - Should all projects use exact same phase names or allow project-type variations?
+
    - Current: Allow variations by project type
    - Decision: _[To be decided]_
-
 2. **Issue linking depth** - Should sub-issues be listed under parent issues in roadmap?
+
    - Current: Only top-level issues linked
    - Decision: _[To be decided]_
-
 3. **Success criteria granularity** - How many criteria per project?
+
    - Current: 4-6 suggested
    - Decision: _[To be decided]_
-
 4. **Related projects threshold** - When should projects be linked?
+
    - Current: Shared domain/tech/user
    - Decision: _[To be decided]_
 
 ### Template Revisions Log
 
-| Date | Change | Reason |
-|------|--------|--------|
+
+| Date       | Change                 | Reason                        |
+| ------------ | ------------------------ | ------------------------------- |
 | 2025-11-28 | Initial skill creation | Standardize project templates |
-| _[Date]_ | _[Change]_ | _[Reason]_ |
+| _[Date]_   | _[Change]_             | _[Reason]_                    |
