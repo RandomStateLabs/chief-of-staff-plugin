@@ -62,7 +62,7 @@ Chief of Staff is a Claude Code plugin that unifies project management across Ob
 | `/evening-sync`          | End-of-day Linear updates | Exists                        |
 | `/project-brief [name]`  | Project deep dive         | Exists                        |
 | `/project-sync`          | Cross-system sync         | Exists                        |
-| `/create-project [name]` | Scaffold new project      | Proposed                      |
+| `/create-project [name]` | Scaffold new project      | Exists                        |
 | `/capture-note`          | Write to project folder   | Proposed                      |
 | `/audit-notes`           | Pre-vault note review     | Proposed                      |
 | `/create-issue`          | Templated Linear issue    | Proposed                      |
@@ -76,7 +76,7 @@ Chief of Staff is a Claude Code plugin that unifies project management across Ob
 | `morning-planner`  | Morning briefing synthesis   | Exists   |
 | `evening-reviewer` | Evening sync with Linear     | Exists   |
 | `project-analyst`  | Deep project analysis        | Exists   |
-| `project-creator`  | Scaffold new projects        | Proposed |
+| `project-creator`  | Scaffold new projects        | Exists   |
 | `note-auditor`     | Semantic analysis, placement | Proposed |
 
 **Skills**:
@@ -88,9 +88,9 @@ Chief of Staff is a Claude Code plugin that unifies project management across Ob
 | `linear-integration` | Linear read/write with batch approval | Exists   |
 | `graphiti-memory`    | Knowledge graph operations (primary historical source) | Exists   |
 | `taskmaster-docs`    | Read .taskmaster/docs/ (PRD + captured notes) | Proposed |
-| `github-integration` | Repo read/write, scaffolding          | Proposed |
+| `github-integration` | Repo read/write, scaffolding          | Exists   |
 | `git-operations`     | Local git state (status, log, diff)   | Proposed |
-| `project-context`    | Resolve project identity across systems | Proposed |
+| `project-context`    | Resolve project identity across systems | Exists   |
 | `semantic-analysis`  | Duplicate detection for note audit    | Proposed |
 | `task-sync`          | TaskMaster ↔ Linear sync             | Proposed |
 
@@ -144,11 +144,24 @@ Chief of Staff is a Claude Code plugin that unifies project management across Ob
 
 ### Graphiti Group Structure
 
+> **IMPORTANT**: Graphiti uses a FLAT namespace - hierarchical group_ids like `work:project-name` do NOT support hierarchical querying. Use only two graphs.
+
 ```python
-group_id = "work"              # Cross-project
-group_id = "work:pe-eval"      # Project-specific
-group_id = "work:chief-of-staff"
+# ✅ CORRECT - Two-Graph Model
+group_id = "work"       # All professional/work context (Chief of Staff operations)
+group_id = "personal"   # Personal notes, non-work context
+
+# ❌ WRONG - Hierarchical patterns don't filter correctly
+# group_id = "work:pe-eval"        # Querying ["work"] won't find this
+# group_id = "work:chief-of-staff" # Creates isolated graph, not child of "work"
 ```
+
+**Project Scoping Strategy**: Instead of separate graphs per project, include project names in:
+1. **Query content** - `query="Pe-eval status decisions blockers"`
+2. **Episode naming** - `name="Project Sync - Pe-eval - 2025-11-24"`
+3. **Episode body** - Include project context in the stored content
+
+This keeps all work knowledge in one searchable graph while maintaining project context through content.
 
 ## API Specifications
 
@@ -208,7 +221,7 @@ add_memory:
 - `/create-project [name]` scaffolds folder structure
 - Links existing or creates new GitHub repo
 - Creates Linear project from template
-- Initializes Graphiti group `work:[project-slug]`
+- Stores project creation event to Graphiti "work" graph (with project name in content)
 - Optional TaskMaster init
 
 ### 1.2 Linear Templates
@@ -217,10 +230,11 @@ add_memory:
 - Define issue template with type prefixes (feat, fix, chore)
 - Implement auto-detection of project from directory
 
-### 1.3 Graphiti Groups
+### 1.3 Graphiti Configuration
 
-- Test hierarchical group_id querying
-- Implement project-specific vs cross-project queries
+- ✅ RESOLVED: Hierarchical group_ids don't work - use two-graph model instead
+- All Chief of Staff operations use `group_ids=["work"]`
+- Project scoping achieved through query content and episode naming, not separate graphs
 
 ## Phase 2: Two-View Task System
 
