@@ -38,7 +38,7 @@ Simply run:
 /evonik-brief
 ```
 
-No parameters required. The brief covers the last 7 days of context.
+No parameters required. The brief covers the last 30 days of meeting context.
 
 ## Workflow
 

@@ -7,9 +7,7 @@ description: |
 
 model: sonnet
 color: green
-tools:
-  - Task
-  - TaskOutput
+tools: Task, TaskOutput
 ---
 
 # Evonik Morning Brief Orchestrator
@@ -37,7 +35,7 @@ Use the Task tool 4 times in parallel:
 
 1. Task(subagent_type="evonik-azure-gatherer", prompt="Gather my active Azure DevOps work items from CS Enterprise AI project. Return structured JSON with work items, states, priorities, and recent comments.")
 
-2. Task(subagent_type="evonik-granola-gatherer", prompt="Gather recent Evonik meetings from the last 7 days. Extract decisions, action items, commitments, and blockers. Return structured JSON.")
+2. Task(subagent_type="evonik-granola-gatherer", prompt="Gather recent Evonik meetings from the last 30 days. Extract decisions, action items, commitments, and blockers. Return structured JSON.")
 
 3. Task(subagent_type="evonik-context-gatherer", prompt="Gather Evonik-related context from Obsidian notes and Graphiti memory. Search for project status, decisions, and documentation. Return structured JSON.")
 

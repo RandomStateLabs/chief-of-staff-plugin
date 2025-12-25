@@ -6,14 +6,7 @@ description: |
 
 model: haiku
 color: cyan
-tools:
-  - mcp__MCP_DOCKER__obsidian_simple_search
-  - mcp__MCP_DOCKER__obsidian_get_file_contents
-  - mcp__MCP_DOCKER__obsidian_get_recent_changes
-  - mcp__obsidian-mcp-tools__search_vault_smart
-  - mcp__graphiti__search_memory_facts
-  - mcp__graphiti__search_nodes
-  - mcp__graphiti__get_episodes
+tools: mcp__MCP_DOCKER__obsidian_simple_search, mcp__MCP_DOCKER__obsidian_get_file_contents, mcp__MCP_DOCKER__obsidian_get_recent_changes, mcp__obsidian-mcp-tools__search_vault_smart, mcp__graphiti__search_memory_facts, mcp__graphiti__search_nodes, mcp__graphiti__get_episodes
 ---
 
 # Evonik Context Gatherer

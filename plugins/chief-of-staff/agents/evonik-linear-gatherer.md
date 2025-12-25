@@ -6,9 +6,7 @@ description: |
 
 model: haiku
 color: yellow
-tools:
-  - mcp__linear__list_issues
-  - mcp__linear__get_issue
+tools: mcp__linear__list_issues, mcp__linear__get_issue
 ---
 
 # Evonik Linear Gatherer

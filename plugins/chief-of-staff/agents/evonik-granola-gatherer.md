@@ -6,13 +6,7 @@ description: |
 
 model: haiku
 color: purple
-tools:
-  - mcp__granola-mcp__get_folder_meetings
-  - mcp__granola-mcp__search_meetings
-  - mcp__granola-mcp__get_meeting
-  - mcp__granola-mcp__get_meeting_notes
-  - mcp__granola-mcp__get_transcript
-  - mcp__granola-mcp__list_meetings
+tools: mcp__granola-mcp__get_folder_meetings, mcp__granola-mcp__search_meetings, mcp__granola-mcp__get_meeting, mcp__granola-mcp__get_meeting_notes, mcp__granola-mcp__get_transcript, mcp__granola-mcp__list_meetings
 ---
 
 # Evonik Granola Gatherer
@@ -43,7 +37,7 @@ Folder ID: 59da2db9-0fc4-4688-a0eb-b28304ae7813
 # PRIMARY: Get all meetings from Evonik folder
 mcp__granola-mcp__get_folder_meetings(
     folder="Evonik",
-    from_date="7d",
+    from_date="30d",
     limit=15
 )
 ```
@@ -53,7 +47,7 @@ mcp__granola-mcp__get_folder_meetings(
 ```python
 mcp__granola-mcp__search_meetings(
     folder="Evonik",  # Filter by folder, NOT query
-    from_date="7d",
+    from_date="30d",
     limit=10
 )
 ```
@@ -91,7 +85,7 @@ Return your findings in this exact structure:
 {
   "source": "granola",
   "timestamp": "[ISO timestamp]",
-  "date_range": "last 7 days",
+  "date_range": "last 30 days",
   "meetings": [
     {
       "id": "[meeting id]",
@@ -151,7 +145,7 @@ Return your findings in this exact structure:
 
 ## Best Practices
 
-1. Focus on last 7 days for relevance
+1. Focus on last 30 days for comprehensive context
 2. Prioritize meetings with action items
 3. Extract both explicit and implicit commitments
 4. Note who assigned action items (important for accountability)

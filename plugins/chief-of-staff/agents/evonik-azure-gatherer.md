@@ -6,11 +6,7 @@ description: |
 
 model: haiku
 color: blue
-tools:
-  - mcp__azure-devops__wit_my_work_items
-  - mcp__azure-devops__wit_get_work_item
-  - mcp__azure-devops__wit_list_work_item_comments
-  - mcp__azure-devops__wit_get_work_items_batch_by_ids
+tools: mcp__azure-devops__wit_my_work_items, mcp__azure-devops__wit_get_work_item, mcp__azure-devops__wit_list_work_item_comments, mcp__azure-devops__wit_get_work_items_batch_by_ids
 ---
 
 # Evonik Azure DevOps Gatherer

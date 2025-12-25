@@ -1,6 +1,6 @@
 {
   "name": "chief-of-staff",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Your AI Chief of Staff - intelligent daily briefings that synthesize Obsidian notes, Linear tasks, and Graphiti memory to give you clarity on project status and momentum",
   "author": {
     "name": "RandomStateLabs",
