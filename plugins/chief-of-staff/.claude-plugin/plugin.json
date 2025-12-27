@@ -1,6 +1,6 @@
 {
   "name": "chief-of-staff",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "Your AI Chief of Staff - intelligent daily briefings that synthesize Obsidian notes, Linear tasks, and Graphiti memory to give you clarity on project status and momentum",
   "author": {
     "name": "RandomStateLabs",
@@ -23,7 +23,9 @@
     "./commands/project-brief.md",
     "./commands/project-sync.md",
     "./commands/create-project.md",
-    "./commands/evonik-brief.md"
+    "./commands/evonik-brief.md",
+    "./commands/life-brief.md",
+    "./commands/rs42-brief.md"
   ],
   "agents": [
     "./agents/morning-planner.md",
@@ -34,7 +36,15 @@
     "./agents/evonik-azure-gatherer.md",
     "./agents/evonik-granola-gatherer.md",
     "./agents/evonik-context-gatherer.md",
-    "./agents/evonik-linear-gatherer.md"
+    "./agents/evonik-linear-gatherer.md",
+    "./agents/life-orchestrator.md",
+    "./agents/life-obsidian-gatherer.md",
+    "./agents/life-graphiti-gatherer.md",
+    "./agents/rs42-orchestrator.md",
+    "./agents/rs42-linear-gatherer.md",
+    "./agents/rs42-obsidian-gatherer.md",
+    "./agents/rs42-graphiti-gatherer.md",
+    "./agents/rs42-github-gatherer.md"
   ],
   "skills": [
     "./skills/obsidian-reader",
