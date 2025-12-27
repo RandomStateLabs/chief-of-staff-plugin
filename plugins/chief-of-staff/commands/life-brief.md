@@ -4,13 +4,13 @@ description: Generate comprehensive morning brief for personal life. Synthesizes
 
 # /life-brief
 
-Generate a comprehensive personal life briefing using multi-agent orchestration.
+Generate a comprehensive personal life briefing using parallel data gathering and synthesis.
 
 ## What This Command Does
 
-This command spawns a multi-agent system that:
+This command:
 
-1. **Gathers data from 2 sources in parallel**:
+1. **Gathers data from 2 sources in parallel** (spawned directly from main Claude):
    - Obsidian - Personal journals, daily notes, habit tracking
    - Graphiti - Personal knowledge graph and memory
 
@@ -41,27 +41,147 @@ No parameters required. The brief covers recent journal entries and personal con
 
 ## Workflow
 
-When you run this command, spawn the **life-orchestrator** agent:
+When you run this command, spawn **both gatherer agents in PARALLEL** using a SINGLE message with multiple Task tool calls:
 
 ```
-Task(
-  subagent_type="chief-of-staff:life-orchestrator",
-  description="Generate personal life morning brief",
-  prompt="Generate a comprehensive personal life brief. Spawn the 2 data-gathering agents in parallel (life-obsidian-gatherer, life-graphiti-gatherer), collect their results, and synthesize into a formatted briefing focused on personal alignment, habits, and growth. Include reflection analysis and prioritized focus for today."
-)
+Use the Task tool 2 times in the SAME message:
+
+1. Task(
+     subagent_type="chief-of-staff:life-obsidian-gatherer",
+     description="Gather personal journal entries",
+     prompt="Gather recent personal journal entries from Obsidian. Focus on Personal/Journal/ folder. Extract gratitude entries, morning thoughts, habit tracking, top priorities, and evening reflections. Return structured JSON.",
+     run_in_background=true
+   )
+
+2. Task(
+     subagent_type="chief-of-staff:life-graphiti-gatherer",
+     description="Gather personal memory context",
+     prompt="Gather personal context from Graphiti memory. Search for personal insights, patterns, and historical reflections. Return structured JSON.",
+     run_in_background=true
+   )
 ```
 
-## Expected Output
+**CRITICAL**: Both Task calls MUST be in the SAME message to run in parallel.
 
-The orchestrator will produce a formatted briefing including:
+Then collect results using TaskOutput for each agent.
 
-- **Recent Journal Insights** - Key themes from recent entries
-- **Gratitude & Mindset** - Gratitude patterns and morning thoughts
-- **Habit Tracking** - Current streaks and alignment
-- **Top Priorities** - Personal priorities from journals
-- **Growth Patterns** - Recurring themes and insights
-- **Vision Alignment** - How current actions align with long-term vision
-- **Today's Focus** - Prioritized personal goals
+## Synthesis Instructions
+
+After collecting all results, synthesize following these steps:
+
+### Step 1: Extract Recurring Themes
+
+From journal entries, identify:
+- What topics appear across multiple entries?
+- What gratitude themes recur?
+- What priorities are consistently mentioned?
+
+### Step 2: Identify Alignment Gaps
+
+Compare journal entries against stated vision:
+1. **Vision statement** - "Who do you want to be?" from journals
+2. **Current habits** - Meditation, AA, gym, sobriety tracking
+3. **Alignment score** - Are daily actions matching vision?
+4. **Gap identification** - What's not aligned?
+
+### Step 3: Celebrate Wins
+
+Note positive patterns and growth:
+- Habits maintained
+- Goals achieved
+- Positive emotional trends
+
+### Step 4: Surface Action Items
+
+Identify personal tasks mentioned but not completed in journals.
+
+### Step 5: Generate Personal Focus
+
+Based on synthesis, recommend:
+1. **Today's intention** - Single focus for the day
+2. **Habit priorities** - Which habits to focus on
+3. **Gratitude reminder** - Surface recent gratitude themes
+4. **Growth opportunity** - One area for improvement
+
+## Output Format
+
+Generate the final briefing in this exact structure:
+
+```markdown
+# Personal Life Brief - [Today's Date]
+
+## Morning Reflection
+
+> [Inspirational quote from recent journal if found]
+
+### How You've Been Feeling
+[Summary of recent emotional themes from journals]
+
+### Gratitude Themes
+1. [Recurring gratitude topic 1]
+2. [Recurring gratitude topic 2]
+3. [Recurring gratitude topic 3]
+
+---
+
+## Habit Tracking
+
+### Current Focus Habits
+| Habit | Recent Status | Streak/Notes |
+|-------|---------------|--------------|
+| Meditation | [status] | [notes] |
+| AA | [status] | [notes] |
+| Gym | [status] | [notes] |
+| Journaling | [status] | [notes] |
+
+### Alignment Check
+**Vision**: "[Who do you want to be quote]"
+**Current Alignment**: [assessment]
+
+---
+
+## Personal Priorities
+
+### From Recent Journals
+- [ ] [Priority 1 from journals]
+- [ ] [Priority 2 from journals]
+- [ ] [Priority 3 from journals]
+
+### Pending Personal Tasks
+- [Task mentioned but not completed]
+
+---
+
+## Growth Insights
+
+### Recurring Themes
+- **[Theme 1]**: [What journals reveal about this]
+- **[Theme 2]**: [Pattern observed]
+
+### Wins to Celebrate
+- [Positive pattern or accomplishment noted]
+
+### Areas for Growth
+- [Gentle observation about improvement opportunity]
+
+---
+
+## Today's Focus
+
+### Intention
+**[Single clear intention for today]**
+
+### Affirmation
+[Supportive message based on journal themes]
+
+### First Step
+[One concrete action to start the day aligned]
+
+---
+
+*Generated: [timestamp]*
+*Sources: Obsidian Personal Journals, Graphiti Personal Memory*
+```
 
 ## Architecture
 
@@ -70,9 +190,10 @@ The orchestrator will produce a formatted briefing including:
        │
        ▼
 ┌─────────────────────────────────────┐
-│  life-orchestrator (sonnet)         │
-│  - Spawns gatherers in parallel     │
-│  - Collects and synthesizes data    │
+│  Main Claude (spawns directly)      │
+│  - Spawns both gatherers in parallel│
+│  - Collects results with TaskOutput │
+│  - Synthesizes personal insights    │
 │  - Generates personal briefing      │
 └──────────────┬──────────────────────┘
                │
@@ -91,9 +212,21 @@ The orchestrator will produce a formatted briefing including:
 
 ## Error Handling
 
-- If Obsidian is unavailable, the brief will note this prominently
-- If Graphiti fails, the brief continues with journal data
-- Partial data is clearly marked in the output
+| Scenario | Handling |
+|----------|----------|
+| Obsidian agent fails | **CRITICAL** - Report error, limited brief possible |
+| Graphiti agent fails | Continue with journal data only |
+| No recent journals | Note gap, encourage journaling |
+| Agent returns empty data | Include section with supportive message |
+
+## Tone Guidelines
+
+When generating the brief:
+1. **Supportive, not judgmental** - This is personal reflection
+2. **Encouraging** - Celebrate small wins
+3. **Honest** - Surface alignment gaps gently
+4. **Actionable** - Always end with concrete next step
+5. **Personal** - Use "you" language, reference their actual words
 
 ## Related Commands
 
